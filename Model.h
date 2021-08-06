@@ -51,10 +51,9 @@ private:
     std::vector<GLuint> getIndices(json& accessor);
     std::vector<Texture> getTextures(json& accessor);
 
-    std::vector<Vertex> assembleVertices(
-        const std::vector<glm::vec3>& positions,
-        const std::vector<glm::vec3>& normals,
-        const std::vector<glm::vec2>& texUVs);
+    std::vector<Vertex> assembleVertices(const std::vector<glm::vec3>& positions,
+                                         const std::vector<glm::vec3>& normals,
+                                         const std::vector<glm::vec2>& texUVs);
 
     std::vector<glm::vec2> groupFloatsVec2(const std::vector<float>& floatVec);
     std::vector<glm::vec3> groupFloatsVec3(const std::vector<float>& floatVec);

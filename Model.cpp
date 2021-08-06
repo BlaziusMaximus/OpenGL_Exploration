@@ -294,6 +294,7 @@ std::vector<Vertex> Model::assembleVertices(const std::vector<glm::vec3>& positi
                                             const std::vector<glm::vec3>& normals,
                                             const std::vector<glm::vec2>& texUVs) {
     std::vector<Vertex> vertices;
+    vertices.reserve(positions.size());
 
     for (int i = 0; i < positions.size(); i++) {
         vertices.push_back(
@@ -309,24 +310,33 @@ std::vector<Vertex> Model::assembleVertices(const std::vector<glm::vec3>& positi
 
 std::vector<glm::vec2> Model::groupFloatsVec2(const std::vector<float>& floatVec) {
     std::vector<glm::vec2> vectors;
+    vectors.reserve(floatVec.size());
+
     for (int i = 0; i < floatVec.size(); i) {
-        vectors.push_back(glm::vec2(floatVec[i++], floatVec[i++]));
+        vectors.emplace_back(floatVec[i++], floatVec[i++]);
     }
+
     return vectors;
 }
 
 std::vector<glm::vec3> Model::groupFloatsVec3(const std::vector<float>& floatVec) {
     std::vector<glm::vec3> vectors;
+    vectors.reserve(floatVec.size());
+
     for (int i = 0; i < floatVec.size(); i) {
-        vectors.push_back(glm::vec3(floatVec[i++], floatVec[i++], floatVec[i++]));
+        vectors.emplace_back(floatVec[i++], floatVec[i++], floatVec[i++]);
     }
+
     return vectors;
 }
 
 std::vector<glm::vec4> Model::groupFloatsVec4(const std::vector<float>& floatVec) {
     std::vector<glm::vec4> vectors;
+    vectors.reserve(floatVec.size());
+
     for (int i = 0; i < floatVec.size(); i) {
-        vectors.push_back(glm::vec4(floatVec[i++], floatVec[i++], floatVec[i++], floatVec[i++]));
+        vectors.emplace_back(floatVec[i++], floatVec[i++], floatVec[i++], floatVec[i++]);
     }
+
     return vectors;
 }

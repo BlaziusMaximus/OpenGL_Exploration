@@ -64,12 +64,14 @@ verts_inds SphereMesh::constructSphere(const float& radius,
                                        const unsigned int& stacks,
                                        const glm::vec4& color) {
     std::vector<Vertex> vertices;
+    vertices.reserve((stacks + 1) * (sectors + 1));
     std::vector<GLuint> indices;
+    indices.reserve((stacks - 2) * sectors * 10);
     std::vector<GLuint> lineIndices;
 
-    float sectorStep = 2 * PI / sectors;
-    float stackStep = PI / stacks;
-    float lengthInv = 1.0f / radius;
+    const float sectorStep = 2 * PI / sectors;
+    const float stackStep = PI / stacks;
+    const float lengthInv = 1.0f / radius;
 
     float sectorAngle, stackAngle;
     glm::vec3 pos;

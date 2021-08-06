@@ -1,7 +1,10 @@
 #include "Mesh.h"
 
-Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::vector<Texture>& textures) :
-    position(glm::vec3(0.0f)), meshMatrix(glm::mat4(1.0f)), vertices(vertices), indices(indices), textures(textures) {
+Mesh::Mesh(const std::vector<Vertex>& vertices,
+           const std::vector<GLuint>& indices,
+           const std::vector<Texture>& textures) :
+    position(glm::vec3(0.0f)),
+    meshMatrix(glm::mat4(1.0f)), vertices(vertices), indices(indices), textures(textures) {
     // binds vertex array object
     VAO.Bind();
 
