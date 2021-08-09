@@ -59,10 +59,10 @@ void SphereMesh::drawLines(Camera& camera) {
     glDrawElements(GL_LINES, lineIndices.size(), GL_UNSIGNED_INT, 0);
 }
 
-verts_inds SphereMesh::constructSphere(const float& radius,
-                                       const unsigned int& sectors,
-                                       const unsigned int& stacks,
-                                       const glm::vec4& color) {
+mesh_struct SphereMesh::constructSphere(const float& radius,
+                                        const unsigned int& sectors,
+                                        const unsigned int& stacks,
+                                        const glm::vec4& color) {
     std::vector<Vertex> vertices;
     vertices.reserve((stacks + 1) * (sectors + 1));
     std::vector<GLuint> indices;
@@ -128,7 +128,7 @@ verts_inds SphereMesh::constructSphere(const float& radius,
         }
     }
 
-    return verts_inds{
+    return mesh_struct{
         .vertices = vertices,
         .indices = indices,
         .lineIndices = lineIndices

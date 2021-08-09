@@ -10,6 +10,7 @@
 #include "Model.h"
 #include "Line.h"
 #include "SphereMesh.h"
+#include "IcosphereMesh.h"
 #include "Light/DirLight.h"
 #include "Light/PointLight.h"
 #include "Light/SpotLight.h"
@@ -124,8 +125,10 @@ int main() {
     };
     // SphereMesh sphere(1.0f, 36, 18, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
-    SphereMesh sphere(0.2f, 36, 18, sphereTextures);
-    sphere.Translate(1.0f, 0.0f, 0.0f);
+    // SphereMesh sphere(0.2f, 36, 18, sphereTextures);
+    ;
+    IcosphereMesh sphere(IcosphereMesh::constructSphere(0.2f, 0, glm::vec4(0.2f, 0.5f, 0.3f, 1.0f)));
+    // sphere.Translate(1.0f, 0.0f, 0.0f);
     sphereShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
     sphereShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
     sphereShader.setVec3("material.specular", glm::vec3(0.5f));
@@ -150,7 +153,8 @@ int main() {
                 // Model newModel = bunnyModel;
                 // newModel.Translate(glm::vec3((float)(rand() % 100) / 100.0f, 1.0f, (float)(rand() % 100) / 100.0f));
                 // models.push_back(newModel);
-                spotLight.switchOnOff();
+                // spotLight.switchOnOff();
+                sphere.subdivideSphere(1);
                 spaceIsPressed = true;
             }
             if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE && spaceIsPressed) {
@@ -183,11 +187,11 @@ int main() {
             line.Draw(lineShader, camera);
             // XZ.Draw(shaderProgram, camera);
 
-            sphere.RotateLocal(-0.1f, glm::vec3(0.0f, 1.0f, 0.0f));
-            sphere.RotateWorld(0.001f, glm::vec3(0.0f, 1.0f, 0.0f));
+            // sphere.RotateLocal(-0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+            // sphere.RotateWorld(0.001f, glm::vec3(0.0f, 1.0f, 0.0f));
 
             sphere.Draw(sphereShader, camera);
-            sphere.drawLines(camera);
+            // sphere.drawLines(camera);
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             glfwSwapBuffers(window);

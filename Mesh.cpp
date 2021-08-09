@@ -28,6 +28,29 @@ Mesh::Mesh(const std::vector<Vertex>& vertices,
     }
 }
 
+void Mesh::updateMesh(const std::vector<Vertex>& vertices,
+                      const std::vector<GLuint>& indices) {
+    this->vertices = vertices;
+    this->indices = indices;
+
+    // binds vertex array object
+    VAO.Bind();
+
+    // generates and links vertex & element buffer objects to vertices & indices
+    VertexBuffer VBO(vertices);
+    ElementBuffer EBO(indices);
+
+    // links VBO attributes to VAO
+    VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
+    VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));
+    VAO.LinkAttrib(VBO, 2, 4, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float)));
+    VAO.LinkAttrib(VBO, 3, 2, GL_FLOAT, sizeof(Vertex), (void*)(10 * sizeof(float)));
+    // unbind after use
+    VAO.Unbind();
+    VBO.Unbind();
+    EBO.Unbind();
+}
+
 void Mesh::Draw(Shader& shader,
                 Camera& camera,
                 const glm::mat4& matrix) {

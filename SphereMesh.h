@@ -1,13 +1,6 @@
 #pragma once
 
 #include "Mesh.h"
-
-struct verts_inds {
-    std::vector<Vertex> vertices;
-    std::vector<GLuint> indices;
-    std::vector<GLuint> lineIndices;
-};
-
 class SphereMesh : public Mesh {
 private:
     float radius;
@@ -17,7 +10,7 @@ private:
     VertexArray lineVAO;
     std::vector<GLuint> lineIndices;
 
-    verts_inds constructSphere(
+    mesh_struct constructSphere(
         const float& radius,
         const unsigned int& sectors,
         const unsigned int& stacks,

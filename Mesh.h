@@ -8,6 +8,12 @@
 #include "Texture.h"
 #include "Shapes.h"
 
+struct mesh_struct {
+    std::vector<Vertex> vertices;
+    std::vector<GLuint> indices;
+    std::vector<GLuint> lineIndices;
+};
+
 class Mesh {
 protected:
     VertexArray VAO;
@@ -23,6 +29,9 @@ public:
     Mesh(const std::vector<Vertex>& vertices,
          const std::vector<GLuint>& indices,
          const std::vector<Texture>& textures = std::vector<Texture>());
+
+    void updateMesh(const std::vector<Vertex>& vertices,
+                    const std::vector<GLuint>& indices);
 
     void Draw(Shader& shader,
               Camera& camera,
