@@ -62,14 +62,7 @@ void Mesh::Draw(Shader& shader,
 
     for (int i = 0; i < textures.size(); i++) {
         std::string material = "material.";
-        std::string num;
         std::string type = textures[i].type;
-
-        if (type == "diffuse") {
-            num = std::to_string(numDiffuse++);
-        } else if (type == "specular") {
-            num = std::to_string(numSpecular++);
-        }
 
         textures[i].texUnit(shader, (material + type).c_str(), i);
         textures[i].Bind();
@@ -114,3 +107,19 @@ void Mesh::Scale(const glm::vec3& sca) {
     meshMatrix = glm::scale(sca) * meshMatrix;
     Translate(modelPosition);
 }
+
+// Welp, this turned out to be unnecessary
+// void Mesh::removeRedundantLines(std::vector<GLuint>& lineIndices) {
+//     std::unordered_set<std::pair<GLuint, GLuint>, pair_hash> uset;
+
+//     for (int i = 0; i < lineIndices.size(); i += 2) {
+//         std::pair<GLuint, GLuint> line(lineIndices[i], lineIndices[i + 1]);
+//         if (uset.find(line) == uset.end()) {
+//             uset.emplace(line);
+//         } else {
+//             lineIndices.erase(lineIndices.begin() + i);
+//             lineIndices.erase(lineIndices.begin() + i + 1);
+//             i -= 2;
+//         }
+//     }
+// }

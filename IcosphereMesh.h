@@ -2,6 +2,9 @@
 
 #include "Mesh.h"
 
+#define G_RECT_W 0.525731112119133606f
+#define G_RECT_L 0.850650808352039932f
+
 struct ico_mesh_struct : public mesh_struct {
     std::vector<Vertex> vertices;
     std::vector<GLuint> indices;

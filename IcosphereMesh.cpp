@@ -71,14 +71,17 @@ void IcosphereMesh::constructSubdividedSphere(ico_mesh_struct& sphere, const uns
             s0.position = (v0.position + v1.position) * (sphere.radius / sqrtf(glm::dot(v0.position + v1.position, v0.position + v1.position)));
             s0.normal = glm::normalize(s0.position);
             s0.color = glm::mix(v0.color, v1.color, 0.5f);
+            s0.texUV = glm::mix(v0.texUV, v1.texUV, 0.5f);
 
             s1.position = (v2.position + v1.position) * (sphere.radius / sqrtf(glm::dot(v2.position + v1.position, v2.position + v1.position)));
             s1.normal = glm::normalize(s0.position);
             s1.color = glm::mix(v2.color, v1.color, 0.5f);
+            s1.texUV = glm::mix(v2.texUV, v1.texUV, 0.5f);
 
             s2.position = (v0.position + v2.position) * (sphere.radius / sqrtf(glm::dot(v0.position + v2.position, v0.position + v2.position)));
             s2.normal = glm::normalize(s0.position);
             s2.color = glm::mix(v0.color, v2.color, 0.5f);
+            s2.texUV = glm::mix(v0.texUV, v2.texUV, 0.5f);
 
             sphere.vertices.push_back(s0);
             sphere.vertices.push_back(s1);
@@ -100,34 +103,34 @@ void IcosphereMesh::constructSubdividedSphere(ico_mesh_struct& sphere, const uns
             sphere.indices.push_back(new_ind + 1);
             sphere.indices.push_back(sphere.indices[2]);
 
+            sphere.lineIndices.push_back(sphere.indices[0]);
+            sphere.lineIndices.push_back(new_ind + 0);
+
+            sphere.lineIndices.push_back(new_ind + 0);
+            sphere.lineIndices.push_back(new_ind + 2);
+
+            sphere.lineIndices.push_back(new_ind + 2);
+            sphere.lineIndices.push_back(sphere.indices[0]);
+
+            sphere.lineIndices.push_back(new_ind + 0);
+            sphere.lineIndices.push_back(sphere.indices[1]);
+
+            sphere.lineIndices.push_back(sphere.indices[1]);
+            sphere.lineIndices.push_back(new_ind + 1);
+
+            sphere.lineIndices.push_back(new_ind + 1);
+            sphere.lineIndices.push_back(new_ind + 0);
+
+            sphere.lineIndices.push_back(new_ind + 2);
+            sphere.lineIndices.push_back(new_ind + 1);
+
+            sphere.lineIndices.push_back(new_ind + 1);
+            sphere.lineIndices.push_back(sphere.indices[2]);
+
+            sphere.lineIndices.push_back(sphere.indices[2]);
+            sphere.lineIndices.push_back(new_ind + 2);
+
             sphere.indices.erase(sphere.indices.begin(), sphere.indices.begin() + 3);
-
-            sphere.lineIndices.push_back(0);
-            sphere.lineIndices.push_back(new_ind + 0);
-
-            sphere.lineIndices.push_back(new_ind + 0);
-            sphere.lineIndices.push_back(new_ind + 2);
-
-            sphere.lineIndices.push_back(new_ind + 2);
-            sphere.lineIndices.push_back(0);
-
-            sphere.lineIndices.push_back(new_ind + 0);
-            sphere.lineIndices.push_back(1);
-
-            sphere.lineIndices.push_back(1);
-            sphere.lineIndices.push_back(new_ind + 1);
-
-            sphere.lineIndices.push_back(new_ind + 1);
-            sphere.lineIndices.push_back(new_ind + 0);
-
-            sphere.lineIndices.push_back(new_ind + 2);
-            sphere.lineIndices.push_back(new_ind + 1);
-
-            sphere.lineIndices.push_back(new_ind + 1);
-            sphere.lineIndices.push_back(2);
-
-            sphere.lineIndices.push_back(2);
-            sphere.lineIndices.push_back(new_ind + 2);
         }
     }
 }
@@ -139,7 +142,8 @@ void IcosphereMesh::subdivideSphere(const unsigned int& subs) {
         .vertices = vertices,
         .indices = indices,
         .lineIndices = lineIndices,
-        .radius = radius
+        .radius = radius,
+        .subdivisions = subdivisions
     };
 
     constructSubdividedSphere(sphere, subs);

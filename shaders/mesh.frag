@@ -75,8 +75,8 @@ void main() {
     }
 
     // output final color
-    // FragColor = vec4(result, 1.0);
-    FragColor = color;
+    FragColor = vec4(result, 1.0);
+    // FragColor = color;
 }
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 viewDir) {

@@ -126,8 +126,7 @@ int main() {
     // SphereMesh sphere(1.0f, 36, 18, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
     // SphereMesh sphere(0.2f, 36, 18, sphereTextures);
-    ;
-    IcosphereMesh sphere(IcosphereMesh::constructSphere(0.2f, 0, glm::vec4(0.2f, 0.5f, 0.3f, 1.0f)));
+    IcosphereMesh sphere(IcosphereMesh::constructSphere(1.0f, 0, glm::vec4(0.2f, 0.5f, 0.3f, 1.0f)), sphereTextures);
     // sphere.Translate(1.0f, 0.0f, 0.0f);
     sphereShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
     sphereShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);

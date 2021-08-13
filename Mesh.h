@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <unordered_set>
 
 #include "VertexArray.h"
 #include "ElementBuffer.h"
@@ -20,6 +21,8 @@ protected:
 
     glm::vec3 position;
     glm::mat4 meshMatrix;
+
+    void removeRedundantLines(std::vector<GLuint>& lineIndices);
 
 public:
     std::vector<Vertex> vertices;
