@@ -1,4 +1,5 @@
 #include "VertexArray.h"
+#include "VertexBuffer.h"
 
 // Constructor that generates a VAO ID
 VertexArray::VertexArray() {

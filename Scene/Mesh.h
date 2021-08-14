@@ -1,13 +1,12 @@
 #pragma once
 
-#include <string>
-#include <unordered_set>
+#include "Drawable.h"
+#include "../Renderer/Texture.h"
 
-#include "VertexArray.h"
-#include "ElementBuffer.h"
-#include "Camera.h"
-#include "Texture.h"
-#include "Shapes.h"
+#include <string>
+
+class VertexArray;
+class ElementBuffer;
 
 struct mesh_struct {
     std::vector<Vertex> vertices;
@@ -15,14 +14,12 @@ struct mesh_struct {
     std::vector<GLuint> lineIndices;
 };
 
-class Mesh {
+class Mesh : public Drawable {
 protected:
-    VertexArray VAO;
-
     glm::vec3 position;
     glm::mat4 meshMatrix;
 
-    void removeRedundantLines(std::vector<GLuint>& lineIndices);
+    // void removeRedundantLines(std::vector<GLuint>& lineIndices);
 
 public:
     std::vector<Vertex> vertices;

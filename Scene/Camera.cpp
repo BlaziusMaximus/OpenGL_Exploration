@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "../Renderer/Shader.h"
 
 Camera::Camera(GLsizei* width, GLsizei* height, const glm::vec3& position) :
     width(width), height(height), aspect(0.0f),

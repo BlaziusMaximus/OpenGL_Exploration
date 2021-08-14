@@ -7,13 +7,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Model.h"
-#include "Line.h"
-#include "SphereMesh.h"
-#include "IcosphereMesh.h"
-#include "Light/DirLight.h"
-#include "Light/PointLight.h"
-#include "Light/SpotLight.h"
+#include "Scene/Scene.h"
+#include "Scene/Camera.h"
+#include "Renderer/Shader.h"
+#include "Renderer/Texture.h"
 
 #include "FrameCounter.h"
 
@@ -119,14 +116,22 @@ int main() {
     };
     Mesh XZ = Mesh(XZverts, XZinds);
 
-    std::vector<Texture> sphereTextures{
-        Texture("textures/earthmap1k.jpg", "diffuse", 0),
-        Texture("textures/earthspec1k.jpg", "specular", 1)
+    // std::vector<Texture> sphereTextures{
+    //     Texture("textures/earthmap1k.jpg", "diffuse", 0),
+    //     Texture("textures/earthspec1k.jpg", "specular", 1)
+    // };
+    // std::vector<Texture> icosphereTextures{
+    //     Texture("textures/ico_earthmap_diffuse.jpg", "diffuse", 0),
+    //     Texture("textures/ico_earthmap_specular.jpg", "specular", 1)
+    // };
+    std::vector<Texture> icosphereTextures{
+        Texture("textures/ico_ex_diffuse.png", "diffuse", 0),
+        Texture("textures/ico_ex_specular.png", "specular", 1)
     };
     // SphereMesh sphere(1.0f, 36, 18, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
     // SphereMesh sphere(0.2f, 36, 18, sphereTextures);
-    IcosphereMesh sphere(IcosphereMesh::constructSphere(1.0f, 0, glm::vec4(0.2f, 0.5f, 0.3f, 1.0f)), sphereTextures);
+    IcosphereMesh sphere(IcosphereMesh::constructSphere(1.0f, 0, glm::vec4(0.2f, 0.5f, 0.3f, 1.0f)), icosphereTextures);
     // sphere.Translate(1.0f, 0.0f, 0.0f);
     sphereShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
     sphereShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
@@ -190,7 +195,7 @@ int main() {
             // sphere.RotateWorld(0.001f, glm::vec3(0.0f, 1.0f, 0.0f));
 
             sphere.Draw(sphereShader, camera);
-            // sphere.drawLines(camera);
+            sphere.drawLines(camera);
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             glfwSwapBuffers(window);

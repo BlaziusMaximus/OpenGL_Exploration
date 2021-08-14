@@ -2,7 +2,9 @@
 
 #include "Mesh.h"
 
-class CuboidMesh : Mesh {
+#include "Shapes.h"
+
+class CuboidMesh : public Mesh {
 public:
     Shapes::Cuboid cuboid;
 

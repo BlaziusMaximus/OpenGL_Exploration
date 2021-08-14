@@ -1,4 +1,7 @@
 #include "SphereMesh.h"
+#include "../Renderer/VertexBuffer.h"
+#include "../Renderer/ElementBuffer.h"
+#include "Camera.h"
 
 SphereMesh::SphereMesh(const float& radius,
                        const unsigned int& sectors,

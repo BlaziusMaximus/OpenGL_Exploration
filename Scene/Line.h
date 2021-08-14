@@ -1,13 +1,14 @@
 #pragma once
 
-#include "VertexArray.h"
-#include "Camera.h"
+#include "Drawable.h"
 
-class Line {
+#include <vector>
+
+class VertexArray;
+
+class Line : public Drawable {
 public:
     std::vector<LineVertex> vertices;
-
-    VertexArray VAO;
 
     Line(const std::vector<LineVertex>& vertices);
 

@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "Shader.h"
 
 #include <iostream>
 
@@ -33,6 +34,10 @@ Texture::Texture(const char* image, const char* texType, const GLuint& slot) {
     // float flatColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
     // glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, flatColor);
 
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
     if (numColCh == 4) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
     } else if (numColCh == 3) {

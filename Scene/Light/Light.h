@@ -1,8 +1,9 @@
 #pragma once
 
-#include <string>
+#include "../../Utils.h"
+#include "../../Renderer/Shader.h"
 
-#include "../Shader.h"
+#include <string>
 
 class Light {
 protected:

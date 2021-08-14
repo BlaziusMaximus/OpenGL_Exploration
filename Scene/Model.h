@@ -3,6 +3,7 @@
 #include <json/json.h>
 
 #include "Mesh.h"
+#include "Shapes.h"
 
 using json = nlohmann::json;
 
