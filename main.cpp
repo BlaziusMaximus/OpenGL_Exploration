@@ -59,12 +59,17 @@ int main() {
     DirLight dirLight(sphereShader, "dirLight");
     SpotLight spotLight(sphereShader, "spotLight", glm::vec3(0.0f), glm::vec3(0.0f));
 
+    Shader outlineShader("shaders/outline.vert", "shaders/outline.frag");
+
     // enable depth buffer and set depth function
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     // enable source-alpha blending
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // enable stencil buffer
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     // camera
     Camera camera(&SCR_WIDTH, &SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f));
@@ -167,7 +172,7 @@ int main() {
 
             // render
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
             // update camera matrix
             camera.updateMatrix(45.0f, 0.1f, 100.0f);
@@ -194,7 +199,21 @@ int main() {
             // sphere.RotateLocal(-0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
             // sphere.RotateWorld(0.001f, glm::vec3(0.0f, 1.0f, 0.0f));
 
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
             sphere.Draw(sphereShader, camera);
+
+            glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+            glStencilMask(0x00);
+            glDisable(GL_DEPTH_TEST);
+            outlineShader.Activate();
+            glUniform1f(glGetUniformLocation(outlineShader.ID, "outline"), 0.08f);
+            sphere.Draw(outlineShader, camera);
+
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glEnable(GL_DEPTH_TEST);
+
             sphere.drawLines(camera);
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -207,6 +226,7 @@ int main() {
     sphereShader.Delete();
     lightShader.Delete();
     lineShader.Delete();
+    outlineShader.Delete();
 
     // delete window
     glfwDestroyWindow(window);

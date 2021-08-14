@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Mesh.h"
+#include "Scene/Mesh.h"
 
 #define G_RECT_W 0.525731112119133606f
 #define G_RECT_L 0.850650808352039932f

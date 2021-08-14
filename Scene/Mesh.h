@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Drawable.h"
-#include "../Renderer/Texture.h"
+#include "Renderer/Texture.h"
 
 #include <string>
 

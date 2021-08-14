@@ -1,5 +1,5 @@
 #include "Line.h"
-#include "../Renderer/VertexBuffer.h"
+#include "Renderer/VertexBuffer.h"
 
 Line::Line(const std::vector<LineVertex>& vertices) :
     vertices(vertices) {

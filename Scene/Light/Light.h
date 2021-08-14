@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../Utils.h"
-#include "../../Renderer/Shader.h"
+#include "Utils.h"
+#include "Renderer/Shader.h"
 
 #include <string>
 

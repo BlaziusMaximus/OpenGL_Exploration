@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Utils.h"
+#include "Utils.h"
 #include "Camera.h"
-#include "../Renderer/Shader.h"
-#include "../Renderer/VertexArray.h"
+#include "Renderer/Shader.h"
+#include "Renderer/VertexArray.h"
 
 class Camera;
 

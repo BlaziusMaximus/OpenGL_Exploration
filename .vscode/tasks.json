@@ -14,6 +14,7 @@
                 "${workspaceFolder}${pathSeparator}*.c",
                 "${workspaceFolder}${pathSeparator}Scene${pathSeparator}*.cpp",
                 "${workspaceFolder}${pathSeparator}Scene${pathSeparator}Light${pathSeparator}*.cpp",
+                "${workspaceFolder}${pathSeparator}Scene${pathSeparator}Meshes${pathSeparator}*.cpp",
                 "${workspaceFolder}${pathSeparator}Renderer${pathSeparator}*.cpp",
                 "-lglfw3dll",
                 "-o",

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Mesh.h"
+#include "Scene/Mesh.h"
 
 class SphereMesh : public Mesh {
 private:

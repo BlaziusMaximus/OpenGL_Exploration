@@ -1,5 +1,5 @@
 #include "Model.h"
-#include "../Renderer/Texture.h"
+#include "Renderer/Texture.h"
 
 Model::Model(const char* file) :
     position(glm::vec3(0.0f, 0.0f, 0.0f)),

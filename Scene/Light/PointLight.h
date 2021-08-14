@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Light.h"
-#include "../SphereMesh.h"
+#include "Scene/Meshes/SphereMesh.h"
 
 class PointLight : public Light {
 protected:

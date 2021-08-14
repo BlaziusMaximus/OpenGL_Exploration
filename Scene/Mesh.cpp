@@ -1,7 +1,7 @@
 #include "Mesh.h"
-#include "../Renderer/Texture.h"
-#include "../Renderer/VertexBuffer.h"
-#include "../Renderer/ElementBuffer.h"
+#include "Renderer/Texture.h"
+#include "Renderer/VertexBuffer.h"
+#include "Renderer/ElementBuffer.h"
 #include "Camera.h"
 
 Mesh::Mesh(const std::vector<Vertex>& vertices,

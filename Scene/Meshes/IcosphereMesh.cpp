@@ -1,6 +1,6 @@
 #include "IcosphereMesh.h"
-#include "../Renderer/VertexBuffer.h"
-#include "../Renderer/ElementBuffer.h"
+#include "Renderer/VertexBuffer.h"
+#include "Renderer/ElementBuffer.h"
 
 IcosphereMesh::IcosphereMesh(const ico_mesh_struct& sphereMesh) :
     Mesh(sphereMesh.vertices, sphereMesh.indices),

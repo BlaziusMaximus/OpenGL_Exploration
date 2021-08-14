@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Mesh.h"
+#include "Scene/Mesh.h"
 
-#include "Shapes.h"
+#include "Scene/Shapes.h"
 
 class CuboidMesh : public Mesh {
 public:
