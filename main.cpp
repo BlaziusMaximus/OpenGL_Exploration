@@ -29,7 +29,8 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // glfw window creation
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OpenGL Review | Summer 2021", NULL, NULL);
+    const std::string windowTitle = "OpenGL Review | Summer 2021";
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, windowTitle.c_str(), NULL, NULL);
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -58,8 +59,6 @@ int main() {
 
     DirLight dirLight(sphereShader, "dirLight");
     SpotLight spotLight(sphereShader, "spotLight", glm::vec3(0.0f), glm::vec3(0.0f));
-
-    Shader outlineShader("shaders/outline.vert", "shaders/outline.frag");
 
     // enable depth buffer and set depth function
     glEnable(GL_DEPTH_TEST);
@@ -129,22 +128,25 @@ int main() {
     //     Texture("textures/ico_earthmap_diffuse.jpg", "diffuse", 0),
     //     Texture("textures/ico_earthmap_specular.jpg", "specular", 1)
     // };
-    std::vector<Texture> icosphereTextures{
-        Texture("textures/ico_ex_diffuse.png", "diffuse", 0),
-        Texture("textures/ico_ex_specular.png", "specular", 1)
-    };
+    // std::vector<Texture> icosphereTextures{
+    //     Texture("textures/ico_ex_diffuse.png", "diffuse", 0),
+    //     Texture("textures/ico_ex_specular.png", "specular", 1)
+    // };
     // SphereMesh sphere(1.0f, 36, 18, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
     // SphereMesh sphere(0.2f, 36, 18, sphereTextures);
-    IcosphereMesh sphere(IcosphereMesh::constructSphere(1.0f, 0, glm::vec4(0.2f, 0.5f, 0.3f, 1.0f)), icosphereTextures);
+    // IcosphereMesh sphere(IcosphereMesh::constructSphere(1.0f, 0, glm::vec4(0.2f, 0.5f, 0.3f, 1.0f)), icosphereTextures);
     // sphere.Translate(1.0f, 0.0f, 0.0f);
     sphereShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
     sphereShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
     sphereShader.setVec3("material.specular", glm::vec3(0.5f));
     sphereShader.setFloat("material.shininess", 16.0f);
 
+    CylinderMesh cylinder(CylinderMesh::constructCylinder(1.0f, 1.5f, 5, glm::vec4(0.7f, 0.2f, 0.9f, 0.8f)));
+
     // FPS
-    FrameCounter fpsCounter(60);
+    FrameCounter fpsCounter = FrameCounter(60);
+    frame_struct fpsStruct;
 
     bool spaceIsPressed = false;
 
@@ -153,7 +155,13 @@ int main() {
     // main loop
     while (!glfwWindowShouldClose(window)) {
         // std::cout << "FPS: " << fpsCounter.getFPS() << std::endl;
-        if (fpsCounter.tick()) {
+        fpsStruct = fpsCounter.tick();
+        if (fpsStruct.ticked) {
+            const std::string FPS = std::to_string(fpsStruct.FPS);
+            const std::string MS = std::to_string(fpsStruct.MS);
+            const std::string newTitle = windowTitle + " " + FPS + "FPS / " + MS + "ms";
+            glfwSetWindowTitle(window, newTitle.c_str());
+
             // input
             processInput(window);
             camera.handleInputs(window);
@@ -163,10 +171,13 @@ int main() {
                 // newModel.Translate(glm::vec3((float)(rand() % 100) / 100.0f, 1.0f, (float)(rand() % 100) / 100.0f));
                 // models.push_back(newModel);
                 // spotLight.switchOnOff();
-                sphere.subdivideSphere(1);
+                // sphere.subdivideSphere(1);
+                cylinder.setSectors(cylinder.getSectors() + 1);
+                cylinder.setOutlined(true);
                 spaceIsPressed = true;
             }
             if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE && spaceIsPressed) {
+                cylinder.setOutlined(false);
                 spaceIsPressed = false;
             }
 
@@ -198,23 +209,15 @@ int main() {
 
             // sphere.RotateLocal(-0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
             // sphere.RotateWorld(0.001f, glm::vec3(0.0f, 1.0f, 0.0f));
+            cylinder.RotateLocal(0.001f, glm::vec3(1.0f, 0.0f, 0.0f));
+            cylinder.RotateLocal(0.004f, glm::vec3(0.0f, 1.0f, 0.0f));
+            cylinder.RotateLocal(0.009f, glm::vec3(0.0f, 0.0f, 1.0f));
 
-            glStencilFunc(GL_ALWAYS, 1, 0xFF);
-            glStencilMask(0xFF);
-            sphere.Draw(sphereShader, camera);
+            // sphere.Draw(sphereShader, camera);
+            cylinder.Draw(sphereShader, camera);
 
-            glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-            glStencilMask(0x00);
-            glDisable(GL_DEPTH_TEST);
-            outlineShader.Activate();
-            glUniform1f(glGetUniformLocation(outlineShader.ID, "outline"), 0.08f);
-            sphere.Draw(outlineShader, camera);
-
-            glStencilMask(0xFF);
-            glStencilFunc(GL_ALWAYS, 0, 0xFF);
-            glEnable(GL_DEPTH_TEST);
-
-            sphere.drawLines(camera);
+            // sphere.drawLines(camera);
+            cylinder.drawLines(camera);
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             glfwSwapBuffers(window);
@@ -226,7 +229,6 @@ int main() {
     sphereShader.Delete();
     lightShader.Delete();
     lineShader.Delete();
-    outlineShader.Delete();
 
     // delete window
     glfwDestroyWindow(window);

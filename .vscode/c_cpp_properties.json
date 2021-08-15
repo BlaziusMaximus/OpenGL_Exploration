@@ -3,12 +3,12 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
                 "${workspaceFolder}/Dependencies/**",
-                "${workspaceFolder}/Renderer/**",
+                "${workspaceFolder}/**",
                 "${workspaceFolder}/Scene/**",
                 "${workspaceFolder}/Scene/Light/**",
-                "${workspaceFolder}/Scene/Meshes/**"
+                "${workspaceFolder}/Scene/Meshes/**",
+                "${workspaceFolder}/Renderer/**"
             ],
             "defines": [
                 "_DEBUG",

@@ -80,7 +80,7 @@ void Model::loadMesh(const unsigned int& indMesh) {
     std::vector<Texture> textures = getTextures(JSON["accessors"][texAccInd]);
 
     // Combine the vertices, indices, and textures into a mesh
-    meshes.push_back(Mesh(vertices, indices, textures));
+    meshes.push_back(Mesh(vertices, indices, std::vector<GLuint>(), textures));
 
     json jsonMin = JSON["accessors"][posAccInd]["min"];
     json jsonMax = JSON["accessors"][posAccInd]["max"];

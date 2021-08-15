@@ -6,9 +6,14 @@
 
 Mesh::Mesh(const std::vector<Vertex>& vertices,
            const std::vector<GLuint>& indices,
+           const std::vector<GLuint>& lineIndices,
            const std::vector<Texture>& textures) :
     position(glm::vec3(0.0f)),
-    meshMatrix(glm::mat4(1.0f)), vertices(vertices), indices(indices), textures(textures) {
+    meshMatrix(glm::mat4(1.0f)),
+    vertices(vertices), indices(indices), lineIndices(lineIndices), textures(textures),
+    lineShader("shaders/line.vert", "shaders/line.frag"),
+    outlined(false),
+    outlineShader("shaders/outline.vert", "shaders/outline.frag") {
     // binds vertex array object
     VAO.Bind();
 
@@ -58,6 +63,11 @@ void Mesh::updateMesh(const std::vector<Vertex>& vertices,
 void Mesh::Draw(Shader& shader,
                 Camera& camera,
                 const glm::mat4& matrix) {
+    if (outlined) {
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
+    }
+
     shader.Activate();
     VAO.Bind();
 
@@ -83,6 +93,35 @@ void Mesh::Draw(Shader& shader,
     }
 
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+
+    if (outlined) {
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST);
+
+        outlineShader.Activate();
+        glUniform1f(glGetUniformLocation(outlineShader.ID, "outline"), 0.08f);
+        camera.exportMatrix(outlineShader, "camMatrix");
+
+        glUniformMatrix4fv(glGetUniformLocation(outlineShader.ID, "modelMatrix"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+
+        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 0, 0xFF);
+        glEnable(GL_DEPTH_TEST);
+    }
+}
+
+void Mesh::drawLines(Camera& camera) {
+    lineShader.Activate();
+    lineVAO.Bind();
+
+    glUniform3f(glGetUniformLocation(lineShader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+    camera.exportMatrix(lineShader, "camMatrix");
+
+    glUniformMatrix4fv(glGetUniformLocation(lineShader.ID, "modelMatrix"), 1, GL_FALSE, glm::value_ptr(meshMatrix));
+
+    glDrawElements(GL_LINES, lineIndices.size(), GL_UNSIGNED_INT, 0);
 }
 
 void Mesh::Translate(const glm::vec3& trans) {

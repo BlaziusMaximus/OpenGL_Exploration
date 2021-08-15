@@ -2,32 +2,27 @@
 
 #include "Scene/Mesh.h"
 
+struct sphere_mesh_struct : public mesh_struct {
+    std::vector<Vertex> vertices;
+    std::vector<GLuint> indices;
+    std::vector<GLuint> lineIndices;
+
+    float radius;
+    unsigned int sectors;
+    unsigned int stacks;
+};
+
 class SphereMesh : public Mesh {
-private:
+protected:
     float radius;
     unsigned int sectorCount, stackCount;
 
-    Shader lineShader;
-    VertexArray lineVAO;
-    std::vector<GLuint> lineIndices;
-
-    mesh_struct constructSphere(
-        const float& radius,
-        const unsigned int& sectors,
-        const unsigned int& stacks,
-        const glm::vec4& color = glm::vec4());
-
 public:
-    SphereMesh(
-        const float& radius,
-        const unsigned int& sectors,
-        const unsigned int& stacks,
-        const std::vector<Texture>& textures);
-    SphereMesh(
-        const float& radius,
-        const unsigned int& sectors,
-        const unsigned int& stacks,
-        const glm::vec4& color);
+    SphereMesh(const sphere_mesh_struct& sphere,
+               const std::vector<Texture>& textures = std::vector<Texture>());
 
-    void drawLines(Camera& camera);
+    static sphere_mesh_struct constructSphere(const float& radius,
+                                              const unsigned int& sectors,
+                                              const unsigned int& stacks,
+                                              const glm::vec4& color = glm::vec4());
 };

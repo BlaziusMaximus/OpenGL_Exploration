@@ -152,15 +152,11 @@ private:
     float radius;
     unsigned int subdivisions;
 
-    Shader lineShader;
-    VertexArray lineVAO;
-    std::vector<GLuint> lineIndices;
-
     static void constructSubdividedSphere(ico_mesh_struct& sphere, const unsigned int& subdivisions);
 
 public:
-    IcosphereMesh(const ico_mesh_struct& sphereMesh);
-    IcosphereMesh(const ico_mesh_struct& sphereMesh, const std::vector<Texture>& textures);
+    IcosphereMesh(const ico_mesh_struct& sphere,
+                  const std::vector<Texture>& textures = std::vector<Texture>());
 
     void setupLineVAO();
 
@@ -169,6 +165,4 @@ public:
                                            const glm::vec4& color = glm::vec4());
 
     void subdivideSphere(const unsigned int& subs);
-
-    void drawLines(Camera& camera);
 };

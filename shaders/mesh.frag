@@ -75,7 +75,7 @@ void main() {
     }
 
     // output final color
-    FragColor = vec4(result, 1.0);
+    FragColor = vec4(result, 1.0) * color;
     // FragColor = color;
 }
 

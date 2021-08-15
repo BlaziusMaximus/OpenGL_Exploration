@@ -3,32 +3,30 @@
 #include <iostream>
 
 FrameCounter::FrameCounter() :
-    targetFPS(MAX_FPS), ticks(0), frames(0) {
-    fpsTime = currTime = prevTime = startTime = glfwGetTime();
+    targetFPS(MAX_FPS), ticks(0), counter(0) {
+    currTime = prevTime = startTime = glfwGetTime();
 }
 
 FrameCounter::FrameCounter(const int& FPS) :
-    targetFPS(FPS), ticks(0), frames(0) {
-    fpsTime = currTime = prevTime = startTime = glfwGetTime();
+    targetFPS(FPS), ticks(0), counter(0) {
+    currTime = prevTime = startTime = glfwGetTime();
 }
 
-bool FrameCounter::tick() {
+frame_struct FrameCounter::tick() {
     ticks++;
+    counter++;
     currTime = glfwGetTime();
+    float timeDiff = currTime - prevTime;
 
-    if (currTime - fpsTime >= 1.) {
-        frames = 0;
-        fpsTime = currTime;
-    }
-
-    bool newFrame = (currTime - prevTime >= (1. / (float)targetFPS));
-    if (newFrame) {
-        frames++;
+    frame_struct fpsStruct{
+        .ticked = (timeDiff >= (1. / (float)targetFPS)),
+        .FPS = 1.0f / timeDiff,
+        .MS = 1000 * timeDiff
+    };
+    if (fpsStruct.ticked) {
         prevTime = currTime;
+        counter = 0;
     }
-    return newFrame;
-}
 
-float FrameCounter::getFPS() {
-    return (float)frames / (currTime - fpsTime);
+    return fpsStruct;
 }

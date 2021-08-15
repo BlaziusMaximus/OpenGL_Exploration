@@ -1,12 +1,14 @@
 #include "PointLight.h"
 
+#include "Scene/Meshes/SphereMesh.h"
+
 PointLight::PointLight(Shader& shader, const std::string& uniform,
                        const glm::vec3& position,
                        const float& quadratic, const float& linear, const float& constant,
                        const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular) :
     Light(shader, uniform, ambient, diffuse, specular),
     position(position), quadratic(quadratic), linear(linear), constant(constant),
-    lightSphere(0.05f, 18, 9, glm::vec4(ambient * diffuse * specular, 1.0f)),
+    lightSphere(SphereMesh::constructSphere(0.05f, 18, 9, glm::vec4(ambient * diffuse * specular, 1.0f))),
     modelMatrix(glm::mat4(1.0f)) {
     shader.setVec3(lightUniform + ".position", position);
     shader.setFloat(lightUniform + ".quadratic", quadratic);

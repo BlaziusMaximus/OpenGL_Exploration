@@ -19,15 +19,23 @@ protected:
     glm::vec3 position;
     glm::mat4 meshMatrix;
 
-    // void removeRedundantLines(std::vector<GLuint>& lineIndices);
-
-public:
     std::vector<Vertex> vertices;
     std::vector<GLuint> indices;
     std::vector<Texture> textures;
 
+    Shader lineShader;
+    VertexArray lineVAO;
+    std::vector<GLuint> lineIndices;
+
+    bool outlined;
+    Shader outlineShader;
+
+    // void removeRedundantLines(std::vector<GLuint>& lineIndices);
+
+public:
     Mesh(const std::vector<Vertex>& vertices,
          const std::vector<GLuint>& indices,
+         const std::vector<GLuint>& lineIndices = std::vector<GLuint>(),
          const std::vector<Texture>& textures = std::vector<Texture>());
 
     void updateMesh(const std::vector<Vertex>& vertices,
@@ -36,6 +44,10 @@ public:
     void Draw(Shader& shader,
               Camera& camera,
               const glm::mat4& matrix = glm::mat4(1.0f));
+
+    void drawLines(Camera& camera);
+
+    void setOutlined(bool outlined) { this->outlined = outlined; }
 
     void Translate(const glm::vec3& trans);
     void Translate(const float& tx, const float& ty, const float& tz);

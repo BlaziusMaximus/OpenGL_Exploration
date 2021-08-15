@@ -2,6 +2,7 @@
 #include "Line.h"
 #include "Meshes/SphereMesh.h"
 #include "Meshes/IcosphereMesh.h"
+#include "Meshes/CylinderMesh.h"
 #include "Light/DirLight.h"
 #include "Light/PointLight.h"
 #include "Light/SpotLight.h"

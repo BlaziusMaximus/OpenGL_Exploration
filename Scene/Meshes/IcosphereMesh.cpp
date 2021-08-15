@@ -2,21 +2,10 @@
 #include "Renderer/VertexBuffer.h"
 #include "Renderer/ElementBuffer.h"
 
-IcosphereMesh::IcosphereMesh(const ico_mesh_struct& sphereMesh) :
-    Mesh(sphereMesh.vertices, sphereMesh.indices),
-    radius(sphereMesh.radius),
-    subdivisions(sphereMesh.subdivisions),
-    lineShader("shaders/line.vert", "shaders/line.frag"),
-    lineIndices(sphereMesh.lineIndices) {
-    setupLineVAO();
-}
-
-IcosphereMesh::IcosphereMesh(const ico_mesh_struct& sphereMesh, const std::vector<Texture>& textures) :
-    Mesh(sphereMesh.vertices, sphereMesh.indices, textures),
-    radius(sphereMesh.radius),
-    subdivisions(sphereMesh.subdivisions),
-    lineShader("shaders/line.vert", "shaders/line.frag"),
-    lineIndices(sphereMesh.lineIndices) {
+IcosphereMesh::IcosphereMesh(const ico_mesh_struct& sphere, const std::vector<Texture>& textures) :
+    Mesh(sphere.vertices, sphere.indices, sphere.lineIndices, textures),
+    radius(sphere.radius),
+    subdivisions(sphere.subdivisions) {
     setupLineVAO();
 }
 
@@ -154,16 +143,4 @@ void IcosphereMesh::subdivideSphere(const unsigned int& subs) {
     lineIndices = sphere.lineIndices;
     setupLineVAO();
     subdivisions += subs;
-}
-
-void IcosphereMesh::drawLines(Camera& camera) {
-    lineShader.Activate();
-    lineVAO.Bind();
-
-    glUniform3f(glGetUniformLocation(lineShader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-    camera.exportMatrix(lineShader, "camMatrix");
-
-    glUniformMatrix4fv(glGetUniformLocation(lineShader.ID, "modelMatrix"), 1, GL_FALSE, glm::value_ptr(meshMatrix));
-
-    glDrawElements(GL_LINES, lineIndices.size(), GL_UNSIGNED_INT, 0);
 }
