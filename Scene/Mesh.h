@@ -10,8 +10,8 @@ class ElementBuffer;
 
 struct mesh_struct {
     std::vector<Vertex> vertices;
-    std::vector<GLuint> indices;
-    std::vector<GLuint> lineIndices;
+    std::vector<GLuint> indices;      // front face is CCW winding
+    std::vector<GLuint> lineIndices;  // GL_LINES, thus every two indices yields a line
 };
 
 class Mesh : public Drawable {
@@ -26,6 +26,7 @@ protected:
     Shader lineShader;
     VertexArray lineVAO;
     std::vector<GLuint> lineIndices;
+    bool drawingLines;
 
     bool outlined;
     Shader outlineShader;
@@ -46,7 +47,10 @@ public:
               const glm::mat4& matrix = glm::mat4(1.0f));
 
     void drawLines(Camera& camera);
+    bool getDrawingLines() { return drawingLines; }
+    void setDrawingLines(bool drawing) { this->drawingLines = drawing; }
 
+    bool getOutlined() { return outlined; }
     void setOutlined(bool outlined) { this->outlined = outlined; }
 
     void Translate(const glm::vec3& trans);

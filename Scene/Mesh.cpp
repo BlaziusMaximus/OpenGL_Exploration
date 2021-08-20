@@ -12,6 +12,7 @@ Mesh::Mesh(const std::vector<Vertex>& vertices,
     meshMatrix(glm::mat4(1.0f)),
     vertices(vertices), indices(indices), lineIndices(lineIndices), textures(textures),
     lineShader("shaders/line.vert", "shaders/line.frag"),
+    drawingLines(false),
     outlined(false),
     outlineShader("shaders/outline.vert", "shaders/outline.frag") {
     // binds vertex array object
@@ -109,6 +110,10 @@ void Mesh::Draw(Shader& shader,
         glStencilMask(0xFF);
         glStencilFunc(GL_ALWAYS, 0, 0xFF);
         glEnable(GL_DEPTH_TEST);
+    }
+
+    if (drawingLines) {
+        drawLines(camera);
     }
 }
 

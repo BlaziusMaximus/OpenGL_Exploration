@@ -20,10 +20,11 @@ protected:
     unsigned int sectors;
     glm::vec4 globalColor;
 
+    std::unordered_set<int> keysPressed;
+
 public:
-    CylinderMesh(const cyl_mesh_struct& cylinder);
     CylinderMesh(const cyl_mesh_struct& cylinder,
-                 const std::vector<Texture>& textures);
+                 const std::vector<Texture>& textures = std::vector<Texture>());
 
     void setupLineVAO();
 

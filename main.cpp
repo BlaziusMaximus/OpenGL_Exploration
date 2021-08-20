@@ -1,5 +1,6 @@
 #include <iostream>
 #include <math.h>
+#include <unordered_set>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -12,10 +13,12 @@
 #include "Renderer/Shader.h"
 #include "Renderer/Texture.h"
 
+#include "KeyInput.h"
 #include "FrameCounter.h"
 
 void framebuffer_size_callback(GLFWwindow* window, GLsizei width, GLsizei height);
-void processInput(GLFWwindow* window);
+void processInputForWindow(KeyInput& keyInput, GLFWwindow* window);
+void processInputForCylinder(KeyInput& keyInput, CylinderMesh& cylinder);
 
 // settings
 GLsizei SCR_WIDTH = 800;
@@ -38,6 +41,9 @@ int main() {
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    KeyInput::setupKeyInput(window);
+    KeyInput windowControl({ GLFW_KEY_ESCAPE });
 
     // glad: load all OpenGL function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -69,6 +75,10 @@ int main() {
     // enable stencil buffer
     glEnable(GL_STENCIL_TEST);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    // enable face culling
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     // camera
     Camera camera(&SCR_WIDTH, &SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f));
@@ -143,6 +153,9 @@ int main() {
     sphereShader.setFloat("material.shininess", 16.0f);
 
     CylinderMesh cylinder(CylinderMesh::constructCylinder(1.0f, 1.5f, 5, glm::vec4(0.7f, 0.2f, 0.9f, 0.8f)));
+    KeyInput cylinderControl({ GLFW_KEY_UP,
+                               GLFW_KEY_DOWN,
+                               GLFW_KEY_L });
 
     // FPS
     FrameCounter fpsCounter = FrameCounter(60);
@@ -163,7 +176,8 @@ int main() {
             glfwSetWindowTitle(window, newTitle.c_str());
 
             // input
-            processInput(window);
+            processInputForWindow(windowControl, window);
+            processInputForCylinder(cylinderControl, cylinder);
             camera.handleInputs(window);
 
             if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !spaceIsPressed) {
@@ -216,9 +230,6 @@ int main() {
             // sphere.Draw(sphereShader, camera);
             cylinder.Draw(sphereShader, camera);
 
-            // sphere.drawLines(camera);
-            cylinder.drawLines(camera);
-
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -237,12 +248,6 @@ int main() {
     return 0;
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-void processInput(GLFWwindow* window) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
-
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 void framebuffer_size_callback(GLFWwindow* window, GLsizei width, GLsizei height) {
     // make sure the viewport matches the new window dimensions; note that width and
@@ -250,4 +255,22 @@ void framebuffer_size_callback(GLFWwindow* window, GLsizei width, GLsizei height
     SCR_WIDTH = width;
     SCR_HEIGHT = height;
     glViewport(0, 0, width, height);
+}
+
+void processInputForWindow(KeyInput& keyInput, GLFWwindow* window) {
+    if (keyInput.keyIsDown(GLFW_KEY_ESCAPE)) {
+        glfwSetWindowShouldClose(window, true);
+    }
+}
+
+void processInputForCylinder(KeyInput& keyInput, CylinderMesh& cylinder) {
+    if (keyInput.keyPress(GLFW_KEY_UP)) {
+        cylinder.setSectors(cylinder.getSectors() + 1);
+    }
+    if (keyInput.keyPress(GLFW_KEY_DOWN)) {
+        cylinder.setSectors(cylinder.getSectors() - 1);
+    }
+    if (keyInput.keyPress(GLFW_KEY_L)) {
+        cylinder.setDrawingLines(!cylinder.getDrawingLines());
+    }
 }
