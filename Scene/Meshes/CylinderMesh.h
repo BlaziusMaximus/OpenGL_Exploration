@@ -33,5 +33,5 @@ public:
                                              const glm::vec4& color = glm::vec4());
 
     unsigned int getSectors() { return sectors; }
-    void setSectors(unsigned int sectors);
+    void setSectors(const unsigned int& sectors);
 };

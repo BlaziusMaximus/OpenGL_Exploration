@@ -202,7 +202,10 @@ int main() {
             // update camera matrix
             camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-            spotLight.setPosition(camera.Position + camera.Front * 0.5f + -glm::cross(camera.Right, camera.Front) * 0.1f + camera.Right * 0.2f);
+            spotLight.setPosition(camera.Position +
+                                  camera.Front * 0.5f +
+                                  -glm::cross(camera.Right, camera.Front) * 0.1f +
+                                  camera.Right * 0.2f);
             spotLight.setDirection(camera.Front);
 
             // pointLight.drawSphere(lightShader, camera);
@@ -264,13 +267,13 @@ void processInputForWindow(KeyInput& keyInput, GLFWwindow* window) {
 }
 
 void processInputForCylinder(KeyInput& keyInput, CylinderMesh& cylinder) {
-    if (keyInput.keyPress(GLFW_KEY_UP)) {
+    if (keyInput.keyPressed(GLFW_KEY_UP) || keyInput.keyHolding(GLFW_KEY_UP)) {
         cylinder.setSectors(cylinder.getSectors() + 1);
     }
-    if (keyInput.keyPress(GLFW_KEY_DOWN)) {
+    if (keyInput.keyPressed(GLFW_KEY_DOWN) || keyInput.keyHolding(GLFW_KEY_DOWN)) {
         cylinder.setSectors(cylinder.getSectors() - 1);
     }
-    if (keyInput.keyPress(GLFW_KEY_L)) {
+    if (keyInput.keyPressed(GLFW_KEY_L)) {
         cylinder.setDrawingLines(!cylinder.getDrawingLines());
     }
 }

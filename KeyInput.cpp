@@ -2,10 +2,13 @@
 
 std::unordered_set<KeyInput*> KeyInput::KI_instances;
 
-KeyInput::KeyInput(std::unordered_set<int> trackedKeys) {
+KeyInput::KeyInput(const std::unordered_set<int>& trackedKeys) {
     for (int key : trackedKeys) {
-        keys[key] = false;
-        keysActive[key] = false;
+        keys[key] = {
+            .pressed = false,
+            .active = false,
+            .holding = false
+        };
     }
 
     KeyInput::KI_instances.insert(this);
@@ -15,21 +18,24 @@ KeyInput::~KeyInput() {
     KI_instances.erase(this);
 }
 
-bool KeyInput::keyIsDown(int key) {
-    return keys[key];
+bool KeyInput::keyIsDown(const int& key) {
+    return keys[key].pressed;
 }
 
-bool KeyInput::keyIsActive(int key) {
-    return keysActive[key];
+bool KeyInput::keyIsActive(const int& key) {
+    return keys[key].active;
 }
-void KeyInput::setKeyActive(int key, bool active) {
-    keysActive[key] = active;
+void KeyInput::setKeyActive(const int& key, const bool& active) {
+    keys[key].active = active;
 }
 
-bool KeyInput::keyPress(int key) {
-    bool press = (keys[key] && !keysActive[key]);
-    if (press) { keysActive[key] = true; }
+bool KeyInput::keyPressed(const int& key) {
+    bool press = (keys[key].pressed && !keys[key].active);
+    if (press) { keys[key].active = true; }
     return press;
+}
+bool KeyInput::keyHolding(const int& key) {
+    return keys[key].holding;
 }
 
 void KeyInput::setupKeyInput(GLFWwindow* window) {
@@ -38,9 +44,12 @@ void KeyInput::setupKeyInput(GLFWwindow* window) {
 
 void KeyInput::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     for (KeyInput* keyInput : KI_instances) {
-        keyInput->keys[key] = (action == GLFW_PRESS);
+        keyInput->keys[key].pressed = (action == GLFW_PRESS);
+        keyInput->keys[key].holding = (action == GLFW_REPEAT);
+
         if (action == GLFW_RELEASE) {
-            keyInput->keysActive[key] = false;
+            keyInput->keys[key].active = false;
+            keyInput->keys[key].holding = false;
         }
     }
 }

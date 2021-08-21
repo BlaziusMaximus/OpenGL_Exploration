@@ -3,22 +3,29 @@
 #include <GLFW/glfw3.h>
 #include <unordered_set>
 #include <unordered_map>
+#include <iostream>
+
+struct key_struct {
+    bool pressed;
+    bool active;
+    bool holding;
+};
 
 class KeyInput {
 protected:
-    std::unordered_map<int, bool> keys;
-    std::unordered_map<int, bool> keysActive;
+    std::unordered_map<int, key_struct> keys;
 
 public:
-    KeyInput(std::unordered_set<int> trackedKeys);
+    KeyInput(const std::unordered_set<int>& trackedKeys);
     ~KeyInput();
 
-    bool keyIsDown(int key);
+    bool keyIsDown(const int& key);
 
-    bool keyIsActive(int key);
-    void setKeyActive(int key, bool active);
+    bool keyIsActive(const int& key);
+    void setKeyActive(const int& key, const bool& active);
 
-    bool keyPress(int key);
+    bool keyPressed(const int& key);
+    bool keyHolding(const int& key);
 
     static void setupKeyInput(GLFWwindow* window);
 

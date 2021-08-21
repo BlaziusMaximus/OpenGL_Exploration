@@ -116,7 +116,7 @@ cyl_mesh_struct CylinderMesh::constructCylinder(const float& radius, const float
     return cylinder;
 }
 
-void CylinderMesh::setSectors(unsigned int sectors) {
+void CylinderMesh::setSectors(const unsigned int& sectors) {
     if (sectors < 3) { return; }
     this->sectors = sectors;
 
