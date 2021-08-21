@@ -38,6 +38,7 @@ public:
          const std::vector<GLuint>& indices,
          const std::vector<GLuint>& lineIndices = std::vector<GLuint>(),
          const std::vector<Texture>& textures = std::vector<Texture>());
+    ~Mesh();
 
     void updateMesh(const std::vector<Vertex>& vertices,
                     const std::vector<GLuint>& indices);

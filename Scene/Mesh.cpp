@@ -38,6 +38,20 @@ Mesh::Mesh(const std::vector<Vertex>& vertices,
     }
 }
 
+Mesh::~Mesh() {
+    VAO.Delete();
+
+    std::vector<Vertex>().swap(vertices);
+    std::vector<GLuint>().swap(indices);
+    std::vector<Texture>().swap(textures);
+
+    lineShader.Delete();
+    lineVAO.Delete();
+    std::vector<GLuint>().swap(lineIndices);
+
+    outlineShader.Delete();
+}
+
 void Mesh::updateMesh(const std::vector<Vertex>& vertices,
                       const std::vector<GLuint>& indices) {
     this->vertices = vertices;

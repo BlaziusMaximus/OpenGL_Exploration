@@ -87,3 +87,8 @@ Shapes::Cuboid::Cuboid(const glm::vec3& a, const glm::vec3& b, const glm::vec4& 
 
     vertices = std::vector<Vertex>(_vertices, _vertices + sizeof(_vertices) / sizeof(Vertex));
 }
+
+Shapes::Cuboid::~Cuboid() {
+    std::vector<Vertex>().swap(vertices);
+    std::vector<GLuint>().swap(indices);
+}

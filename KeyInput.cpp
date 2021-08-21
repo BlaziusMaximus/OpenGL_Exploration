@@ -16,6 +16,8 @@ KeyInput::KeyInput(const std::unordered_set<int>& trackedKeys) {
 
 KeyInput::~KeyInput() {
     KI_instances.erase(this);
+
+    std::unordered_map<int, key_struct>().swap(keys);
 }
 
 bool KeyInput::keyIsDown(const int& key) {

@@ -14,6 +14,24 @@ Model::Model(const char* file) :
     traverseNode(0);
 }
 
+Model::~Model() {
+    std::vector<unsigned char>().swap(data);
+    json().swap(JSON);
+
+    std::vector<Mesh>().swap(meshes);
+    std::vector<glm::vec3>().swap(translationsMeshes);
+    std::vector<glm::quat>().swap(rotationsMeshes);
+    std::vector<glm::vec3>().swap(scalesMeshes);
+    std::vector<glm::mat4>().swap(matricesMeshes);
+
+    std::vector<std::string>().swap(loadedTexNames);
+    std::vector<Texture>().swap(loadedTexs);
+
+    std::vector<Shapes::Cuboid>().swap(boundingBoxes);
+    std::vector<Mesh>().swap(boundingBoxMeshes);
+    boundingBoxShader.Delete();
+}
+
 void Model::Draw(Shader& shader, Camera& camera) {
     for (unsigned int i = 0; i < meshes.size(); i++) {
         meshes[i].Mesh::Draw(shader, camera, matricesMeshes[i]);  // , translationsMeshes[i], rotationsMeshes[i], scalesMeshes[i]

@@ -11,6 +11,7 @@ public:
     std::vector<LineVertex> vertices;
 
     Line(const std::vector<LineVertex>& vertices);
+    ~Line();
 
     void Draw(
         Shader& shader,

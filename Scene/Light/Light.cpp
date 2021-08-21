@@ -11,6 +11,10 @@ Light::Light(Shader& shader,
     shader.setBool(lightUniform + ".on", true);
 }
 
+Light::~Light() {
+    shader.Delete();
+}
+
 void Light::setAmbient(const glm::vec3& color) {
     shader.setVec3(lightUniform + ".ambient", color);
     ambient = color;

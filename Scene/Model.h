@@ -13,6 +13,7 @@ public:
 
 public:
     Model(const char* file);
+    ~Model();
 
     void Draw(Shader& shader, Camera& camera);
 

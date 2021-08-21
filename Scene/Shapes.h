@@ -23,5 +23,6 @@ public:
 
     Cuboid(const std::vector<Vertex>& vertices);
     Cuboid(const glm::vec3& a, const glm::vec3& b, const glm::vec4& color);
+    ~Cuboid();
 };
 }  // namespace Shapes

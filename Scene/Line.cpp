@@ -17,6 +17,12 @@ Line::Line(const std::vector<LineVertex>& vertices) :
     VBO.Unbind();
 }
 
+Line::~Line() {
+    VAO.Delete();
+
+    std::vector<LineVertex>().swap(vertices);
+}
+
 void Line::Draw(Shader& shader,
                 Camera& camera,
                 const glm::mat4& matrix) {
