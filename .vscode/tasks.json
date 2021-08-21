@@ -15,6 +15,7 @@
                 "-I.${pathSeparator}Scene${pathSeparator}Meshes",
                 "-I.${pathSeparator}Renderer",
                 "-L.${pathSeparator}Dependencies${pathSeparator}lib",
+                "${workspaceFolder}${pathSeparator}Dependencies${pathSeparator}include${pathSeparator}imgui${pathSeparator}*.cpp",
                 "${workspaceFolder}${pathSeparator}*.cpp",
                 "${workspaceFolder}${pathSeparator}*.c",
                 "${workspaceFolder}${pathSeparator}Scene${pathSeparator}*.cpp",

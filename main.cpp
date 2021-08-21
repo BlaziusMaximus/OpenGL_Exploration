@@ -2,6 +2,10 @@
 #include <math.h>
 #include <unordered_set>
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -42,14 +46,37 @@ int main() {
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    KeyInput::setupKeyInput(window);
-    KeyInput windowControl({ GLFW_KEY_ESCAPE });
-
     // glad: load all OpenGL function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    // enable depth buffer and set depth function
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    // enable source-alpha blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // enable stencil buffer
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    // enable face culling
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+
+    // imgui setup
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
+    KeyInput::setupKeyInput(window);
+    KeyInput windowControl({ GLFW_KEY_ESCAPE });
 
     // shader setup
     Shader lightShader("shaders/light.vert", "shaders/light.frag");
@@ -65,20 +92,6 @@ int main() {
 
     DirLight dirLight(sphereShader, "dirLight");
     SpotLight spotLight(sphereShader, "spotLight", glm::vec3(0.0f), glm::vec3(0.0f));
-
-    // enable depth buffer and set depth function
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    // enable source-alpha blending
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // enable stencil buffer
-    glEnable(GL_STENCIL_TEST);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    // enable face culling
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
 
     // camera
     Camera camera(&SCR_WIDTH, &SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f));
@@ -152,7 +165,8 @@ int main() {
     sphereShader.setVec3("material.specular", glm::vec3(0.5f));
     sphereShader.setFloat("material.shininess", 16.0f);
 
-    CylinderMesh cylinder(CylinderMesh::constructCylinder(1.0f, 1.5f, 5, glm::vec4(0.7f, 0.2f, 0.9f, 0.8f)));
+    int cylinderSectors = 5;
+    CylinderMesh cylinder(CylinderMesh::constructCylinder(1.0f, 1.5f, cylinderSectors, glm::vec4(0.7f, 0.2f, 0.9f, 0.8f)));
     KeyInput cylinderControl({ GLFW_KEY_UP,
                                GLFW_KEY_DOWN,
                                GLFW_KEY_L });
@@ -170,15 +184,23 @@ int main() {
         // std::cout << "FPS: " << fpsCounter.getFPS() << std::endl;
         fpsStruct = fpsCounter.tick();
         if (fpsStruct.ticked) {
+            // render FPS in window title
             const std::string FPS = std::to_string(fpsStruct.FPS);
             const std::string MS = std::to_string(fpsStruct.MS);
             const std::string newTitle = windowTitle + " " + FPS + "FPS / " + MS + "ms";
             glfwSetWindowTitle(window, newTitle.c_str());
 
+            // tell imgui it's a new frame
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
             // input
             processInputForWindow(windowControl, window);
             processInputForCylinder(cylinderControl, cylinder);
-            camera.handleInputs(window);
+            if (!io.WantCaptureMouse) {
+                camera.handleInputs(window);
+            }
 
             if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !spaceIsPressed) {
                 // Model newModel = bunnyModel;
@@ -186,7 +208,6 @@ int main() {
                 // models.push_back(newModel);
                 // spotLight.switchOnOff();
                 // sphere.subdivideSphere(1);
-                cylinder.setSectors(cylinder.getSectors() + 1);
                 cylinder.setOutlined(true);
                 spaceIsPressed = true;
             }
@@ -194,6 +215,9 @@ int main() {
                 cylinder.setOutlined(false);
                 spaceIsPressed = false;
             }
+
+            // logic
+            cylinderSectors = cylinder.getSectors();
 
             // render
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -233,6 +257,16 @@ int main() {
             // sphere.Draw(sphereShader, camera);
             cylinder.Draw(sphereShader, camera);
 
+            // render imgui things
+            ImGui::Begin("ImGui window !!");
+            ImGui::Text("Hello, World!");
+            ImGui::SliderInt("Cylinder Sectors", &cylinderSectors, 3, 1000);
+            cylinder.setSectors(cylinderSectors);
+            ImGui::End();
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -243,6 +277,11 @@ int main() {
     sphereShader.Delete();
     lightShader.Delete();
     lineShader.Delete();
+
+    // delete imgui things
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     // delete window
     glfwDestroyWindow(window);
