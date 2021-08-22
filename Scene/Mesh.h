@@ -43,6 +43,8 @@ public:
     void updateMesh(const std::vector<Vertex>& vertices,
                     const std::vector<GLuint>& indices);
 
+    void setupLineVAO();
+
     void Draw(Shader& shader,
               Camera& camera,
               const glm::mat4& matrix = glm::mat4(1.0f));

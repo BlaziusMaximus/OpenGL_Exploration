@@ -23,6 +23,7 @@
 void framebuffer_size_callback(GLFWwindow* window, GLsizei width, GLsizei height);
 void processInputForWindow(KeyInput& keyInput, GLFWwindow* window);
 void processInputForCylinder(KeyInput& keyInput, CylinderMesh& cylinder);
+void processInputForSphere(KeyInput& keyInput, SphereMesh& sphere);
 
 // settings
 GLsizei SCR_WIDTH = 800;
@@ -143,10 +144,10 @@ int main() {
     };
     Mesh XZ = Mesh(XZverts, XZinds);
 
-    // std::vector<Texture> sphereTextures{
-    //     Texture("textures/earthmap1k.jpg", "diffuse", 0),
-    //     Texture("textures/earthspec1k.jpg", "specular", 1)
-    // };
+    std::vector<Texture> sphereTextures{
+        Texture("textures/earthmap1k.jpg", "diffuse", 0),
+        Texture("textures/earthspec1k.jpg", "specular", 1)
+    };
     // std::vector<Texture> icosphereTextures{
     //     Texture("textures/ico_earthmap_diffuse.jpg", "diffuse", 0),
     //     Texture("textures/ico_earthmap_specular.jpg", "specular", 1)
@@ -155,21 +156,28 @@ int main() {
     //     Texture("textures/ico_ex_diffuse.png", "diffuse", 0),
     //     Texture("textures/ico_ex_specular.png", "specular", 1)
     // };
-    // SphereMesh sphere(1.0f, 36, 18, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    unsigned int sphereSectors = 36;
+    unsigned int sphereStacks = 18;
+    // SphereMesh sphere(SphereMesh::constructSphere(1.0f, sphereSectors, sphereStacks, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
+    KeyInput sphereControl({ GLFW_KEY_UP,
+                             GLFW_KEY_DOWN,
+                             GLFW_KEY_LEFT,
+                             GLFW_KEY_RIGHT,
+                             GLFW_KEY_L });
 
-    // SphereMesh sphere(0.2f, 36, 18, sphereTextures);
+    SphereMesh sphere(SphereMesh::constructSphere(1.0f, 36, 18), sphereTextures);
     // IcosphereMesh sphere(IcosphereMesh::constructSphere(1.0f, 0, glm::vec4(0.2f, 0.5f, 0.3f, 1.0f)), icosphereTextures);
     // sphere.Translate(1.0f, 0.0f, 0.0f);
-    sphereShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-    sphereShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
-    sphereShader.setVec3("material.specular", glm::vec3(0.5f));
     sphereShader.setFloat("material.shininess", 16.0f);
 
-    int cylinderSectors = 5;
-    CylinderMesh cylinder(CylinderMesh::constructCylinder(1.0f, 1.5f, cylinderSectors, glm::vec4(0.7f, 0.2f, 0.9f, 0.8f)));
-    KeyInput cylinderControl({ GLFW_KEY_UP,
-                               GLFW_KEY_DOWN,
-                               GLFW_KEY_L });
+    unsigned int cylinderSectors = 5;
+    CylinderMesh cylinder(CylinderMesh::constructCylinder(1.0f,
+                                                          1.5f,
+                                                          cylinderSectors,
+                                                          glm::vec4(0.7f, 0.2f, 0.9f, 0.8f)));
+    // KeyInput cylinderControl({ GLFW_KEY_UP,
+    //                            GLFW_KEY_DOWN,
+    //                            GLFW_KEY_L });
 
     // FPS
     FrameCounter fpsCounter = FrameCounter(60);
@@ -197,7 +205,8 @@ int main() {
 
             // input
             processInputForWindow(windowControl, window);
-            processInputForCylinder(cylinderControl, cylinder);
+            // processInputForCylinder(cylinderControl, cylinder);
+            processInputForSphere(sphereControl, sphere);
             if (!io.WantCaptureMouse) {
                 camera.handleInputs(window);
             }
@@ -217,7 +226,9 @@ int main() {
             }
 
             // logic
-            cylinderSectors = cylinder.getSectors();
+            // cylinderSectors = cylinder.getSectors();
+            sphereSectors = sphere.getSectors();
+            sphereStacks = sphere.getStacks();
 
             // render
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -250,18 +261,22 @@ int main() {
 
             // sphere.RotateLocal(-0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
             // sphere.RotateWorld(0.001f, glm::vec3(0.0f, 1.0f, 0.0f));
-            cylinder.RotateLocal(0.001f, glm::vec3(1.0f, 0.0f, 0.0f));
-            cylinder.RotateLocal(0.004f, glm::vec3(0.0f, 1.0f, 0.0f));
-            cylinder.RotateLocal(0.009f, glm::vec3(0.0f, 0.0f, 1.0f));
+            // cylinder.RotateLocal(0.001f, glm::vec3(1.0f, 0.0f, 0.0f));
+            // cylinder.RotateLocal(0.004f, glm::vec3(0.0f, 1.0f, 0.0f));
+            // cylinder.RotateLocal(0.009f, glm::vec3(0.0f, 0.0f, 1.0f));
 
-            // sphere.Draw(sphereShader, camera);
-            cylinder.Draw(sphereShader, camera);
+            sphere.Draw(sphereShader, camera);
+            // cylinder.Draw(sphereShader, camera);
 
             // render imgui things
             ImGui::Begin("ImGui window !!");
             ImGui::Text("Hello, World!");
-            ImGui::SliderInt("Cylinder Sectors", &cylinderSectors, 3, 1000);
-            cylinder.setSectors(cylinderSectors);
+            // ImGui::SliderInt("Cylinder Sectors", &cylinderSectors, 3, 1000);
+            ImGui::SliderInt("Sphere Sectors", (int*)&sphereSectors, 3, 1000);
+            ImGui::SliderInt("Sphere Stacks", (int*)&sphereStacks, 2, 1000);
+            // cylinder.setSectors(cylinderSectors);
+            sphere.setSectors(sphereSectors);
+            sphere.setStacks(sphereStacks);
             ImGui::End();
 
             ImGui::Render();
@@ -314,5 +329,23 @@ void processInputForCylinder(KeyInput& keyInput, CylinderMesh& cylinder) {
     }
     if (keyInput.keyPressed(GLFW_KEY_L)) {
         cylinder.setDrawingLines(!cylinder.getDrawingLines());
+    }
+}
+
+void processInputForSphere(KeyInput& keyInput, SphereMesh& sphere) {
+    if (keyInput.keyPressed(GLFW_KEY_UP) || keyInput.keyHolding(GLFW_KEY_UP)) {
+        sphere.setStacks(sphere.getStacks() + 1);
+    }
+    if (keyInput.keyPressed(GLFW_KEY_DOWN) || keyInput.keyHolding(GLFW_KEY_DOWN)) {
+        sphere.setStacks(sphere.getStacks() - 1);
+    }
+    if (keyInput.keyPressed(GLFW_KEY_LEFT) || keyInput.keyHolding(GLFW_KEY_LEFT)) {
+        sphere.setSectors(sphere.getSectors() - 1);
+    }
+    if (keyInput.keyPressed(GLFW_KEY_RIGHT) || keyInput.keyHolding(GLFW_KEY_RIGHT)) {
+        sphere.setSectors(sphere.getSectors() + 1);
+    }
+    if (keyInput.keyPressed(GLFW_KEY_L)) {
+        sphere.setDrawingLines(!sphere.getDrawingLines());
     }
 }

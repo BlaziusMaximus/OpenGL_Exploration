@@ -15,22 +15,9 @@ Mesh::Mesh(const std::vector<Vertex>& vertices,
     drawingLines(false),
     outlined(false),
     outlineShader("shaders/outline.vert", "shaders/outline.frag") {
-    // binds vertex array object
-    VAO.Bind();
+    updateMesh(vertices, indices);
 
-    // generates and links vertex & element buffer objects to vertices & indices
-    VertexBuffer VBO(vertices);
-    ElementBuffer EBO(indices);
-
-    // links VBO attributes to VAO
-    VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
-    VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));
-    VAO.LinkAttrib(VBO, 2, 4, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float)));
-    VAO.LinkAttrib(VBO, 3, 2, GL_FLOAT, sizeof(Vertex), (void*)(10 * sizeof(float)));
-    // unbind after use
-    VAO.Unbind();
-    VBO.Unbind();
-    EBO.Unbind();
+    setupLineVAO();
 
     if (textures.size() == 0) {
         this->textures.push_back(Texture("textures/1X1_WHITE.png", "diffuse", 0));
@@ -73,6 +60,19 @@ void Mesh::updateMesh(const std::vector<Vertex>& vertices,
     VAO.Unbind();
     VBO.Unbind();
     EBO.Unbind();
+}
+
+void Mesh::setupLineVAO() {
+    lineVAO.Bind();
+    VertexBuffer lineVBO(vertices);
+    ElementBuffer lineEBO(lineIndices);
+
+    VAO.LinkAttrib(lineVBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
+    VAO.LinkAttrib(lineVBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));
+
+    lineVAO.Unbind();
+    lineVBO.Unbind();
+    lineEBO.Unbind();
 }
 
 void Mesh::Draw(Shader& shader,

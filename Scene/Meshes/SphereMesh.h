@@ -10,12 +10,14 @@ struct sphere_mesh_struct : public mesh_struct {
     float radius;
     unsigned int sectors;
     unsigned int stacks;
+    glm::vec4 color;
 };
 
 class SphereMesh : public Mesh {
 protected:
     float radius;
     unsigned int sectorCount, stackCount;
+    glm::vec4 globalColor;
 
 public:
     SphereMesh(const sphere_mesh_struct& sphere,
@@ -24,5 +26,10 @@ public:
     static sphere_mesh_struct constructSphere(const float& radius,
                                               const unsigned int& sectors,
                                               const unsigned int& stacks,
-                                              const glm::vec4& color = glm::vec4());
+                                              const glm::vec4& color = glm::vec4(1, 1, 1, 1));
+
+    unsigned int getSectors() { return sectorCount; }
+    void setSectors(unsigned int sectors);
+    unsigned int getStacks() { return stackCount; }
+    void setStacks(unsigned int stacks);
 };

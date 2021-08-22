@@ -6,23 +6,8 @@ CylinderMesh::CylinderMesh(const cyl_mesh_struct& cylinder, const std::vector<Te
     Mesh(cylinder.vertices, cylinder.indices, cylinder.lineIndices, textures),
     radius(cylinder.radius),
     height(cylinder.height),
-    sectors(cylinder.sectors),
-    globalColor(cylinder.color) {
-    setupLineVAO();
-}
-
-void CylinderMesh::setupLineVAO() {
-    lineVAO.Bind();
-    VertexBuffer lineVBO(vertices);
-    ElementBuffer lineEBO(lineIndices);
-
-    VAO.LinkAttrib(lineVBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
-    VAO.LinkAttrib(lineVBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));
-
-    lineVAO.Unbind();
-    lineVBO.Unbind();
-    lineEBO.Unbind();
-}
+    sectorCount(cylinder.sectors),
+    globalColor(cylinder.color) {}
 
 cyl_mesh_struct CylinderMesh::constructCylinder(const float& radius, const float& height,
                                                 const unsigned int& sectors,
@@ -33,6 +18,8 @@ cyl_mesh_struct CylinderMesh::constructCylinder(const float& radius, const float
         .sectors = sectors,
         .color = color
     };
+
+    cylinder.vertices.reserve(2 + 2 * sectors);
 
     // top/bottom cap center
     cylinder.vertices.push_back(Vertex{
@@ -63,6 +50,9 @@ cyl_mesh_struct CylinderMesh::constructCylinder(const float& radius, const float
             .normal = glm::normalize(glm::vec3(pos.x, 0.0f, pos.z)),
             .color = color });
     }
+
+    cylinder.indices.reserve(12 * sectors);
+    cylinder.lineIndices.reserve(10 * sectors);
 
     // triangle/line index generation
     GLuint tc = 0, bc = 1;  // cap: top center, bottom center
@@ -117,8 +107,8 @@ cyl_mesh_struct CylinderMesh::constructCylinder(const float& radius, const float
 }
 
 void CylinderMesh::setSectors(const unsigned int& sectors) {
-    if (sectors < 3) { return; }
-    this->sectors = sectors;
+    if (sectors == sectorCount || sectors < 3) { return; }
+    this->sectorCount = sectors;
 
     cyl_mesh_struct cylinder = constructCylinder(radius, height, sectors, globalColor);
 

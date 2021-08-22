@@ -17,19 +17,17 @@ class CylinderMesh : public Mesh {
 protected:
     float radius;
     float height;
-    unsigned int sectors;
+    unsigned int sectorCount;
     glm::vec4 globalColor;
 
 public:
     CylinderMesh(const cyl_mesh_struct& cylinder,
                  const std::vector<Texture>& textures = std::vector<Texture>());
 
-    void setupLineVAO();
-
     static cyl_mesh_struct constructCylinder(const float& radius, const float& height,
                                              const unsigned int& sectors,
                                              const glm::vec4& color = glm::vec4());
 
-    unsigned int getSectors() { return sectors; }
+    unsigned int getSectors() { return sectorCount; }
     void setSectors(const unsigned int& sectors);
 };
